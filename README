@@ -1,0 +1,5 @@
+Build a C AST (structs and unions) from a simple description language.
+
+For more check examples/folder.
+
+This is WIP.

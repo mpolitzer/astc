@@ -1,0 +1,47 @@
+# building AST for monga language
+
+(decl  (var type:t  name:n)
+       (fun name:name decls:ps type:ret stmt:body))
+
+(decls (null)
+       (some decl:fst decl*:lst))
+
+(type  (nil)
+       (s32)
+       (flt)
+       (chr)
+       (array type:of))
+
+(expr  (add expr:l expr:r)
+       (sub expr:l expr:r)
+       (mul expr:l expr:r)
+       (div expr:l expr:r)
+       (mod expr:l expr:r)
+
+       (eq  expr:l expr:r)
+       (ne  expr:l expr:r)
+
+       (gt  expr:l expr:r)
+       (ge  expr:l expr:r)
+
+       (lt  expr:l expr:r)
+       (le  expr:l expr:r))
+
+(exprs (null)
+       (some exprs:fst exprs*:lst))
+
+(var   (lit     name:n decl:d)
+       (indexed var:v  expr:e))
+
+(call  (some name:n exprs:ps decl:decl))
+
+(stmt  (for_   expr:pre  expr: cond expr:pos stmt: body)
+	   (if_    expr:p    stmt: then stmt:else_)
+       (while_ expr:p    stmt: body)
+       (block  decl:vars stmts:body)
+       (attr   var:var   expr:value)
+       (call   call:call)
+       (ret    expr:value))
+
+(stmts (null)
+       (some stmts:fst stmts*:lst))
