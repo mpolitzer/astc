@@ -18,10 +18,21 @@ static void gen_name(Name *n, const char *fmt, ...) {
 	printf("%.*s", n->n, n->s);
 	vprintf(fmt, ap);
 }
+static void gen_type_(Type *t) {
+	switch (t->any.tp) {
+	case TYPE_BASE:
+		printf("%.*s ", t->base.n, t->base.s);
+		break;
+	case TYPE_PTR_OF:
+		gen_type_(t->ptr.of);
+		printf("*");
+		break;
+	}
+}
 static void gen_type(Type *t, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	printf("%.*s", t->n, t->s);
+	gen_type_(t);
 	vprintf(fmt, ap);
 }
 static void gen_enum(Decl *d, unsigned l) {
@@ -56,7 +67,7 @@ static void gen_struct_name(Name *d, Name *c, const char *fmt, ...) {
 }
 static void gen_entry(Entry *e, unsigned l) {
 	printf("union ");
-	gen_type(e->t, "_t *");
+	gen_type(e->t, "*");
 	gen_name(e->n, ";\n");
 }
 static void gen_entries(Decl *d, Clause *c, unsigned l) {

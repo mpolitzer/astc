@@ -31,14 +31,27 @@ struct name_t {
 Name *mk_name(token_value_t *tv);
 
 /* -------------------------------------------------------------------------- */
-typedef struct type_t Type;
-struct type_t {
-	const char *s;
-	unsigned    n;
+typedef union type_t Type;
+union type_t {
+	struct type_any_t {
+		enum type_any_e {
+			TYPE_BASE, TYPE_PTR_OF
+		} tp;
+	} any;
+	struct base_type_t {
+		struct type_any_t _;
+		const char *s;
+		unsigned    n;
+	} base;
+
+	struct type_ptr_of {
+		struct type_any_t _;
+		union type_t *of;
+	} ptr;
 };
 
-Type *mk_type(token_value_t *tv);
-
+Type *mk_type_base(token_value_t *tv);
+Type *mk_type_of(Type *of);
 
 /* -------------------------------------------------------------------------- */
 typedef struct entry_t Entry;

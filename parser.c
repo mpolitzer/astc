@@ -25,6 +25,19 @@ void adv(parser_t *p) {
 #define cur(p) (p->cur)
 #define nxt(p) (p->nxt)
 
+__attribute__((noreturn))
+void emit_p_error(parser_t *p, const char *msg) {
+	const char *fn  = p->l.fname;
+	const char *s   = p->curtv.s;
+	const char *b   = bol(s, p->l.data);
+	const char *e   = eol(s, p->l.end);
+	unsigned charno = p->curtv.charno;
+	unsigned lineno = p->curtv.lineno;
+
+	emit_error(fn, lineno, charno, msg, b, s, e);
+}
+
+
 static bool try(parser_t *p, token_e t) {
 	if (cur(p) == t) {
 		adv(p);
@@ -39,7 +52,7 @@ static bool x(parser_t *p, token_e t) {
 		return true;
 	}
 
-	emit_l_error(&p->l, "unexpected token received");
+	emit_p_error(p, "unexpected token received");
 	return false;
 }
 // name : <id>
@@ -51,12 +64,22 @@ static Name *name(parser_t *p) {
 	}
 	return NULL;
 }
+// type_: '*' type_ | %empty
+static Type *type_(parser_t *p, Type *of) {
+	Type *t = of;
+
+	while (try(p, TK_ASTERISK)) {
+		t = mk_type_of(t);
+	}
+
+	return t;
+}
 // type : <id>
 static Type *type(parser_t *p) {
 	if (cur(p) == TK_ID) {
-		Type *type = mk_type(&p->curtv);
+		Type *type = mk_type_base(&p->curtv);
 		adv(p);
-		return type;
+		return type_(p, type);
 	}
 	return NULL;
 }
@@ -75,7 +98,7 @@ static Entry *entry(parser_t *p) {
 Entries *entries(parser_t *p) {
 	Entry *e = entry(p);
 	if (e == NULL) {
-		emit_l_error(&p->l, "unexpected token received");
+		emit_p_error(p, "unexpected token received");
 		return NULL;
 	}
 
@@ -108,7 +131,7 @@ static Clauses *clauses(parser_t *p) {
 	Clause  *c = clause(p);
 
 	if (c == NULL) {
-		emit_l_error(&p->l, "unexpected token received");
+		emit_p_error(p, "unexpected token received");
 		return NULL;
 	}
 

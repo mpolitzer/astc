@@ -8,10 +8,18 @@ Name *mk_name(token_value_t *tv) {
 	return me;
 }
 
-Type *mk_type(token_value_t *tv) {
+Type *mk_type_base(token_value_t *tv) {
 	NEW(me, Type);
-	me->s = tv->s;
-	me->n = tv->len;
+	me->any.tp = TYPE_BASE;
+	me->base.s = tv->s;
+	me->base.n = tv->len;
+	return me;
+}
+
+Type *mk_type_of(Type *of) {
+	NEW(me, Type);
+	me->any.tp = TYPE_PTR_OF;
+	me->ptr.of = of;
 	return me;
 }
 

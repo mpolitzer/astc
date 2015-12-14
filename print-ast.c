@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <stdio.h>
+#include "common.h"
 #include "ast.h"
 
 static void print_name(Name *n, unsigned l, const char *fmt, ...) {
@@ -8,10 +9,22 @@ static void print_name(Name *n, unsigned l, const char *fmt, ...) {
 	printf("%*.s%.*s", l, "", n->n, n->s);
 	vprintf(fmt, ap);
 }
+static void print_type_(Type *t) {
+	switch (t->any.tp) {
+	case TYPE_BASE:
+		printf("%.*s", t->base.n, t->base.s);
+		break;
+	case TYPE_PTR_OF:
+		print_type_(t->ptr.of);
+		printf("*");
+		break;
+	default: emit_error(0, 0, 0, "invalid type", 0, 0, 0);
+	}
+}
 static void print_type(Type *t, unsigned l, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	printf("%*.s%.*s", l, "", t->n, t->s);
+	print_type_(t);
 	vprintf(fmt, ap);
 }
 static void print_entry(Entry *e, unsigned l) {
