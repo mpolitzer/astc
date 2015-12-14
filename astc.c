@@ -5,10 +5,14 @@
 
 int main(int argc, const char *argv[]) {
 
-	assert(argc > 1);
+	assert(argc > 3);
 	parser_t p = mk_parser(mk_lexer(argv[1]));
 	Decls *root = parse(&p);
-	gen_structs(root);
+
+	gen_t    g = mk_gen(argv[2], argv[3]);
+	gen_header(&g, root);
+	gen_functions(&g, root);
+	gen_free(&g);
 
 	return 0;
 }

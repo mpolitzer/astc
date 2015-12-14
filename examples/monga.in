@@ -28,7 +28,7 @@
        (le  expr:l expr:r))
 
 (exprs (null)
-       (some exprs:fst exprs*:lst))
+       (some expr:fst expr*:lst))
 
 (var   (lit     name:n decl:d)
        (indexed var:v  expr:e))
@@ -44,4 +44,4 @@
        (ret    expr:value))
 
 (stmts (null)
-       (some stmts:fst stmts*:lst))
+       (some stmt:fst stmt*:lst))

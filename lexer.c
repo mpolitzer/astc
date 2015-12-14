@@ -101,6 +101,6 @@ static const char *read_contents(const char *fin, size_t *sz) {
 lexer_t mk_lexer(const char *fname) {
 	size_t sz;
 	const char *s = read_contents(fname, &sz);
-	return CONSTRUCT_LEXER(&l, fname, s, sz);
+	return CONSTRUCT_LEXER(l, fname, s, sz);
 }
 

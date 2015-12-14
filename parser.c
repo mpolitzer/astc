@@ -1,29 +1,12 @@
 #include "parser.h"
 
+#define cur(p) (p->cur)
+#define nxt(p) (p->nxt)
 void adv(parser_t *p) {
 	p->cur  = p->nxt;
 	p->curtv= p->nxttv;
 	p->nxt  = lex(&p->l, &p->nxttv);
 }
-/* --------------------------------------------------------------------------
- * decls: decl decls | decl;
- * decl : '(' <id:name> opt_clauses ')';
- *
- * opt_clauses: clauses | %empty;
- * clauses: clause clauses;
- * clause: '(' <id> opt_entries ')';
- *
- * opt_entries: entries | %empty;
- *
- * entries: entry entries | entry;
- *
- * entry: type:name
- *
- * type : <id>;
- * name : <id>;
- * -------------------------------------------------------------------------- */
-#define cur(p) (p->cur)
-#define nxt(p) (p->nxt)
 
 __attribute__((noreturn))
 void emit_p_error(parser_t *p, const char *msg) {
@@ -108,7 +91,7 @@ Entries *entries(parser_t *p) {
 	} while ((e = entry(p)));
 	return es;
 }
-// opt_entries: %empty | entries
+// opt_entries: entry*
 static Entries *opt_entries(parser_t *p) {
 	Entries *es = mk_entries();
 	Entry *e;
@@ -126,22 +109,7 @@ static Clause *clause(parser_t *p) {
 	}
 	return NULL;
 }
-// clauses: clause | clause clauses
-static Clauses *clauses(parser_t *p) {
-	Clause  *c = clause(p);
-
-	if (c == NULL) {
-		emit_p_error(p, "unexpected token received");
-		return NULL;
-	}
-
-	Clauses *cs = mk_clauses();
-	do {
-		add_clause(cs, c);
-	} while ((c = clause(p)));
-	return cs;
-}
-// opt_clauses: clauses | %empty;
+// opt_clauses: clause*;
 static Clauses *opt_clauses(parser_t *p) {
 	Clauses *cs = mk_clauses();
 	Clause *c;

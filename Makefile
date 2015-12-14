@@ -7,14 +7,16 @@ common-o=\
 	obj/ast.o\
 	obj/common.o\
 	obj/gen.o\
+	obj/gen_functions.o\
+	obj/gen_header.o\
 	obj/lexer.o\
 	obj/parser.o\
 	obj/print-ast.o\
 	obj/token.o\
 
-tzcc-t=bin/tzcc
-tzcc-o=obj/tzcc.o
-tzcc-c=${tzcc-o:.o=.c}
+astc-t=bin/astc
+astc-o=obj/astc.o
+astc-c=${astc-o:.o=.c}
 
 parser-t=bin/parser-t
 parser-o=obj/parser-t.o
@@ -29,26 +31,26 @@ cflags-a =-g -march=native -std=c99 -O0 -Wall -pedantic -fsanitize=address
 cflags-r =-g -march=native -std=c99 -O2 -Wall -pedantic -Werror
 ldlibs =-O2 -lm
 
-o=$(tzcc-o) $(parser-o) $(lexer-o) $(common-o)
+o=$(astc-o) $(parser-o) $(lexer-o) $(common-o)
 c=${o:.o=.c}
 d=${o:.o=.o.d}
 
 # ==============================================================================
 
 .PHONY: debug release test clean
-debug:   $(tzcc-t) $(parser-t) $(lexer-t)
+debug:   $(astc-t) $(parser-t) $(lexer-t)
 debug:   cflags+=$(cflags-d)
 debug:   ldlibs+=$(ldlibs-d)
 
-asan:    $(tzcc-t) $(parser-t) $(lexer-t)
+asan:    $(astc-t) $(parser-t) $(lexer-t)
 asan:    cflags+=$(cflags-a)
 asan:    ldlibs+=$(ldlibs-a)
 
-release: $(tzcc-t) $(parser-t) $(lexer-t)
+release: $(astc-t) $(parser-t) $(lexer-t)
 release: cflags+=$(cflags-r)
 release: ldlibs+=$(ldlibs-r)
 
-$(tzcc-t): $(tzcc-o) $(common-o)
+$(astc-t): $(astc-o) $(common-o)
 	$(cc) $^ $(ldlibs) $(cflags) -o $@
 
 $(parser-t): $(parser-o) $(common-o)

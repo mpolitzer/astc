@@ -4,104 +4,65 @@
 
 #define IDENT_AMOUNT "  "
 
-static void gen_ident(unsigned n, const char *fmt, ...) {
+void gen_ident_only(FILE *f, unsigned n) {
 	for (unsigned i=0; i<n; ++i) {
-		printf(IDENT_AMOUNT);
+		fprintf(f, IDENT_AMOUNT);
 	}
+}
+void gen_ident(FILE *f, unsigned n, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	vprintf(fmt, ap);
+	gen_ident_only(f, n);
+	vfprintf(f, fmt, ap);
 }
-static void gen_name(Name *n, const char *fmt, ...) {
+void gen_name(FILE *f, Name *n, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	printf("%.*s", n->n, n->s);
-	vprintf(fmt, ap);
+	fprintf(f, "%.*s", n->n, n->s);
+	vfprintf(f, fmt, ap);
 }
-static void gen_type_(Type *t) {
+static void gen_type_(FILE *f, Type *t) {
 	switch (t->any.tp) {
 	case TYPE_BASE:
-		printf("%.*s_t ", t->base.n, t->base.s);
+		fprintf(f, "%.*s_t", t->base.n, t->base.s);
 		break;
 	case TYPE_PTR_OF:
-		gen_type_(t->ptr.of);
-		printf("*");
+		gen_type_(f, t->ptr.of);
+		fprintf(f, "*");
 		break;
 	}
 }
-static void gen_type(Type *t, const char *fmt, ...) {
+void gen_type(FILE *f, Type *t, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	gen_type_(t);
-	vprintf(fmt, ap);
+	gen_type_(f, t);
+	vfprintf(f, fmt, ap);
 }
-static void gen_enum(Decl *d, unsigned l) {
-	gen_ident(l, "enum ");
-	gen_name(d->n, "_e {\n");
-	for (Clause *c = d->cs->fst; c; c = c->nxt) {
-		gen_ident(l+1, "");
-		gen_name(d->n, "_");
-		gen_name(c->n, ",\n");
-	}
-	gen_ident(l, "} tp;\n");
+void gen_struct_name(FILE *f, Name *d, Name *c) {
+	gen_name(f, d, "_");
+	gen_name(f, c, "_t");
 }
-static void gen_common_struct_name(Decl *d, unsigned l, const char *fmt, ...) {
+void gen_struct(FILE *f, const char *pre, Name *d, Name *c, unsigned n, const char *pos) {
+	gen_ident(f, n, "%s", pre);
+	gen_struct_name(f, d, c);
+	fprintf(f, "%s", pos);
+}
+void gen_enum_entry_name(FILE *f, Name *d, Name *c, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	gen_ident(l, "struct ");
-	gen_name(d->n, "_any_t");
-	vprintf(fmt, ap);
+	gen_name(f, d, "_");
+	gen_name(f, c, "_e");
+	vfprintf(f, fmt, ap);
 }
-static void gen_common_struct(Decl *d, unsigned l) {
-	gen_common_struct_name(d, l, " {\n");
-	gen_enum(d, l+1);
-	gen_ident(l, "} any;\n");
+
+/* -------------------------------------------------------------------------- */
+
+gen_t mk_gen(const char *c, const char *h) {
+	return CONSTRUCT_GEN(g, c, h);
 }
-static void gen_struct_name(Name *d, Name *c, const char *fmt, ...) {
-	va_list ap;
-	va_start(ap, fmt);
-	printf("struct ");
-	gen_name(d, "_");
-	gen_name(c, "_t");
-	vprintf(fmt, ap);
-}
-static void gen_entry(Entry *e, unsigned l) {
-	printf("union ");
-	gen_type(e->t, "*"); // auto insert a '*'
-	gen_name(e->n, ";\n");
-}
-static void gen_entries(Decl *d, Clause *c, unsigned l) {
-	gen_common_struct_name(d, l, " _;\n");
-	for (Entry *e = c->es->fst; e; e = e->nxt) {
-		gen_ident(l, "");
-		gen_entry(e, l);
-	}
-}
-static void gen_individual_struct(Decl *d, unsigned l, const char *fmt, ...) {
-	va_list ap;
-	va_start(ap, fmt);
-	for (Clause *c = d->cs->fst; c; c = c->nxt) {
-		gen_ident(l, "");
-		gen_struct_name(d->n, c->n, " {\n");
-		gen_entries(d, c, l+1);
-		gen_ident(l, "} ");
-		gen_name(c->n, ";\n");
-	}
-	vprintf(fmt, ap);
-}
-static void gen_decl(Decl *d, unsigned l) {
-	printf("/* ========== ");
-	gen_name(d->n, " ========== */\n");
-	printf("union ");
-	gen_name(d->n, "_t {\n");
-	gen_common_struct(d, l);
-	gen_individual_struct(d, l, "};\n\n");
-}
-static void gen_decls(Decls *ds, unsigned l) {
-	for (Decl *d = ds->fst; d; d = d->nxt)
-		gen_decl(d, l+1);
-}
-void gen_structs(Decls *ds) {
-	gen_decls(ds, 0);
+
+void gen_free(gen_t *me) {
+	fclose(me->cf);
+	fclose(me->hf);
 }
 
