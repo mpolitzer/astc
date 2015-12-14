@@ -10,9 +10,9 @@ void emit_msg(
 		const char *begin,
 		const char *i,
 		const char *end) {
-	printf( "%s" ":%d:%d:"  "%s%s:" ANSI_COLOR_RESET " %s\n",
+	fprintf(stderr, "%s" ":%d:%d:"  "%s%s:" ANSI_COLOR_RESET " %s\n",
 			fname, lineno, charno, color, level, msg);
-	printf("%.*s\n" ANSI_COLOR_GREEN "%*s%s" ANSI_COLOR_RESET "\n",
+	fprintf(stderr, "%.*s\n" ANSI_COLOR_GREEN "%*s%s" ANSI_COLOR_RESET "\n",
 			(int)(end-begin), begin,
 			(int)(i-begin), "", "^~");
 }

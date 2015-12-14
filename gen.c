@@ -21,7 +21,7 @@ static void gen_name(Name *n, const char *fmt, ...) {
 static void gen_type_(Type *t) {
 	switch (t->any.tp) {
 	case TYPE_BASE:
-		printf("%.*s ", t->base.n, t->base.s);
+		printf("%.*s_t ", t->base.n, t->base.s);
 		break;
 	case TYPE_PTR_OF:
 		gen_type_(t->ptr.of);
@@ -67,7 +67,7 @@ static void gen_struct_name(Name *d, Name *c, const char *fmt, ...) {
 }
 static void gen_entry(Entry *e, unsigned l) {
 	printf("union ");
-	gen_type(e->t, "*");
+	gen_type(e->t, "*"); // auto insert a '*'
 	gen_name(e->n, ";\n");
 }
 static void gen_entries(Decl *d, Clause *c, unsigned l) {
@@ -90,10 +90,12 @@ static void gen_individual_struct(Decl *d, unsigned l, const char *fmt, ...) {
 	vprintf(fmt, ap);
 }
 static void gen_decl(Decl *d, unsigned l) {
+	printf("/* ========== ");
+	gen_name(d->n, " ========== */\n");
 	printf("union ");
 	gen_name(d->n, "_t {\n");
 	gen_common_struct(d, l);
-	gen_individual_struct(d, l, "};\n");
+	gen_individual_struct(d, l, "};\n\n");
 }
 static void gen_decls(Decls *ds, unsigned l) {
 	for (Decl *d = ds->fst; d; d = d->nxt)
@@ -101,6 +103,5 @@ static void gen_decls(Decls *ds, unsigned l) {
 }
 void gen_structs(Decls *ds) {
 	gen_decls(ds, 0);
-	printf("\n");
 }
 

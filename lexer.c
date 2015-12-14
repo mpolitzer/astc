@@ -43,7 +43,7 @@ void emit_l_error(lexer_t *l, const char *msg) {
 }
 
 static void lex_id(lexer_t *l) {
-	while (isalnum(cur(l)))
+	while (cur(l) == '_' || isalnum(cur(l)))
 		adv(l);
 }
 token_e lex(lexer_t *l, token_value_t *t) {
@@ -51,6 +51,9 @@ token_e lex(lexer_t *l, token_value_t *t) {
 
 redo:	s = l->cur;
 	switch (cur(l)) {
+	case '#': adv(l);
+		  while (cur(l) != '\n')
+			  adv(l);
 	case'\n': l->charno=0;
 		  l->lineno++;
 	case'\t':
@@ -65,6 +68,7 @@ redo:	s = l->cur;
 		  t->s      = s;
 		  t->len    = 1;
 		  return adv(l);
+	case '_':
 	__a_to_z:
 	__A_to_Z: t->charno = l->charno;
 		  t->lineno = l->lineno;

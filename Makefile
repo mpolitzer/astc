@@ -12,15 +12,15 @@ common-o=\
 	obj/print-ast.o\
 	obj/token.o\
 
-tzcc-t=tzcc
+tzcc-t=bin/tzcc
 tzcc-o=obj/tzcc.o
 tzcc-c=${tzcc-o:.o=.c}
 
-parser-t=./bin/parser-t
+parser-t=bin/parser-t
 parser-o=obj/parser-t.o
 parser-c=${parser-o:.o=.c}
 
-lexer-t=./bin/lexer-t
+lexer-t=bin/lexer-t
 lexer-o=obj/lexer-t.o
 lexer-c=${lexer-o:.o=.c}
 
