@@ -43,9 +43,23 @@ void emit_l_error(lexer_t *l, const char *msg) {
 }
 
 static void lex_id(lexer_t *l) {
-	while (cur(l) == '_' || isalnum(cur(l)))
+	while (l->cur < l->end && (cur(l) == '_' || isalnum(cur(l))))
 		adv(l);
 }
+
+static const char *find_fwd(char c, const char *s, const char *max) {
+	while (s < max && *s != c)
+		s++;
+	return s == max ? NULL : s;
+}
+
+static void lex_str(lexer_t *l) {
+	const char *new_cur = find_fwd('"', l->cur+1, l->end);
+	if (!new_cur)
+		emit_l_error(l, "unfinished string");
+	l->cur = new_cur;
+}
+
 static token_value_t fill_value(lexer_t *l, const char *start, size_t len) {
 	token_value_t t;
 	t.charno = l->charno;
@@ -59,29 +73,44 @@ token_e lex(lexer_t *l, token_value_t *t) {
 
 redo:	s = l->cur;
 	switch (cur(l)) {
-	case '#': adv(l);
-		  while (cur(l) != '\n')
-			  adv(l);
-	case'\n': l->charno=0;
-		  l->lineno++;
+	case '#':
+		adv(l);
+		while (cur(l) != '\n')
+			adv(l);
+	case'\n':
+		l->charno=0;
+		l->lineno++;
 	case'\t':
-	case ' ': adv(l);
-		  goto redo;
+	case ' ':
+		adv(l);
+		goto redo;
 	case '*': 
 	case '(':
 	case ')':
-	case ':': *t = fill_value(l, s, 1);
-		  return adv(l);
-	case'\0': *t = fill_value(l, s, 1);
-		  return cur(l);
+	case ':':
+		*t = fill_value(l, s, 1);
+		return adv(l);
+	case'\0':
+		*t = fill_value(l, s, 1);
+		return cur(l);
 	case '_':
 	__a_to_z:
-	__A_to_Z: t->charno = l->charno;
-		  t->lineno = l->lineno;
-		  t->s      = s;
-		  lex_id(l);
-		  t->len    = l->cur - s;
-		  return TK_ID;
+	__A_to_Z:
+		t->charno = l->charno;
+		t->lineno = l->lineno;
+		t->s      = s;
+		lex_id(l);
+		t->len    = l->cur - s;
+		return TK_ID;
+	case '"':
+		t->charno = l->charno;
+		t->lineno = l->lineno;
+		t->s      = s+1;
+		lex_str(l);
+		t->len    = l->cur - s - 1;
+		adv(l);
+		return TK_SK;
+
 	default: emit_l_error(l, "failed to lex character");
 	}
 }

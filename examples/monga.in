@@ -1,48 +1,53 @@
 # building AST for monga language
 
-(decl  (var type:t  name:n)
-       (fun name:name decls:ps type:ret stmt:body))
+(decl   decl *:nxt
+       (var type*:t  name*:n)
+       (fun name*:name decls*:ps type*:ret stmt*:body))
 
-(decls (null)
-       (some decl:fst decl*:lst))
+(decls (none)
+       (some decl*:fst decl**:lst))
 
 (type  (nil)
        (s32)
        (flt)
        (chr)
-       (array type:of))
+       (array type*:of))
 
-(expr  (add expr:l expr:r)
-       (sub expr:l expr:r)
-       (mul expr:l expr:r)
-       (div expr:l expr:r)
-       (mod expr:l expr:r)
+(expr  (chr "char" :s8)
+       (flt "float":f32)
+       (s32 "int"  :s32)
 
-       (eq  expr:l expr:r)
-       (ne  expr:l expr:r)
+       (add expr*:l expr*:r)
+       (sub expr*:l expr*:r)
+       (mul expr*:l expr*:r)
+       (div expr*:l expr*:r)
+       (mod expr*:l expr*:r)
 
-       (gt  expr:l expr:r)
-       (ge  expr:l expr:r)
+       (eq  expr*:l expr*:r)
+       (ne  expr*:l expr*:r)
 
-       (lt  expr:l expr:r)
-       (le  expr:l expr:r))
+       (gt  expr*:l expr*:r)
+       (ge  expr*:l expr*:r)
 
-(exprs (null)
-       (some expr:fst expr*:lst))
+       (lt  expr*:l expr*:r)
+       (le  expr*:l expr*:r))
 
-(var   (lit     name:n decl:d)
-       (indexed var:v  expr:e))
+(exprs (none)
+       (some expr*:fst expr**:lst))
 
-(call  (some name:n exprs:ps decl:decl))
+(var   (lit     name*:n decl*:d)
+       (indexed var*:v  expr*:e))
 
-(stmt  (for_   expr:pre  expr: cond expr:pos stmt: body)
-	   (if_    expr:p    stmt: then stmt:else_)
-       (while_ expr:p    stmt: body)
-       (block  decl:vars stmts:body)
-       (attr   var:var   expr:value)
-       (call   call:call)
-       (ret    expr:value))
+(call  (some name*:n exprs*:ps decl*:decl))
 
-(stmts (null)
-       (some stmt:fst stmt*:lst))
+(stmt  (for_   expr*:pre   expr*:cond expr*:pos stmt*: body)
+	   (if_    expr*:p     stmt*:then stmt*:else_)
+       (while_ expr*:p     stmt*:body)
+       (block  decl*:vars stmts*:body)
+       (attr   var *:var   expr*:value)
+       (call   call*:call)
+       (ret    expr*:value))
+
+(stmts (none)
+       (some stmt*:fst stmt**:lst))
 

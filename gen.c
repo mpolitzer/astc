@@ -24,7 +24,10 @@ void gen_name(FILE *f, Name *n, const char *fmt, ...) {
 static void gen_type_(FILE *f, Type *t) {
 	switch (t->any.tp) {
 	case TYPE_BASE:
-		fprintf(f, "%.*s_t ", t->base.n, t->base.s);
+		fprintf(f, "union %.*s_t ", t->base.n, t->base.s);
+		break;
+	case TYPE_LIT:
+		fprintf(f, "%.*s ", t->base.n, t->base.s);
 		break;
 	case TYPE_PTR_OF:
 		gen_type_(f, t->ptr.of);
@@ -37,6 +40,20 @@ void gen_type(FILE *f, Type *t, const char *fmt, ...) {
 	va_start(ap, fmt);
 	gen_type_(f, t);
 	vfprintf(f, fmt, ap);
+}
+void gen_lit_entry(FILE *f, Entry *e, unsigned l) {
+	gen_type(f, e->t, "");
+	gen_name(f, e->n, ";\n");
+}
+void gen_struct_entry(FILE *f, Entry *e, unsigned l) {
+	fprintf (f, "struct ");
+	gen_type(f, e->t, "");
+	gen_name(f, e->n, ";\n");
+}
+void gen_union_entry(FILE *f, Entry *e, unsigned l) {
+	fprintf (f, "union ");
+	gen_type(f, e->t, "");
+	gen_name(f, e->n, ";\n");
 }
 static void gen_struct_name_prefix(FILE *f, Name *d, Name *c) {
 	gen_name(f, d, "_");

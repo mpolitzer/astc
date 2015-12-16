@@ -16,6 +16,14 @@ Type *mk_type_base(token_value_t *tv) {
 	return me;
 }
 
+Type *mk_type_lit(token_value_t *tv) {
+	NEW(me, Type);
+	me->any.tp = TYPE_LIT;
+	me->base.s = tv->s;
+	me->base.n = tv->len;
+	return me;
+}
+
 Type *mk_type_of(Type *of) {
 	NEW(me, Type);
 	me->any.tp = TYPE_PTR_OF;

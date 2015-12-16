@@ -1,5 +1,9 @@
-Build a C AST (structs and unions) from a simple description language.
+Build a AST in C (structs and unions) from a simple description language.
 
-For more check examples/folder.
+TODO:
++ insert a description, motivation and scope.
 
-This is WIP.
+
+TODO:
++ initialize the fields of the 'any' struct.
+

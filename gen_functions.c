@@ -7,14 +7,12 @@ static void gen_type_name_from_decl(FILE *f, Decl *d) {
 	gen_name(f, d->n, "_t *");
 }
 static void gen_entry(FILE *f, Entry *e, unsigned l) {
-	fprintf(f, "union ");
-	gen_type(f, e->t, "* ");
+	gen_type(f, e->t, " ");
 	gen_name(f, e->n, "");
 }
 static void gen_fn_declaration_header(FILE *f, Decl *d, Clause *c, unsigned l) {
 	gen_type_name_from_decl(f, d);
 	gen_function_name(f, "mk_", d->n, c->n, 0, "(");
-	//gen_struct(f, "mk_", d->n, c->n, 0, "(");
 	for (Entry *e = c->es->fst; e; e = e->nxt) {
 		gen_entry(f, e, l);
 		fprintf(f, "%s", e->nxt ? ", " : "");

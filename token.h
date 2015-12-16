@@ -5,6 +5,7 @@
 enum token_e {
 	TK_EOF = '\0',
 	TK_ID,
+	TK_SK,
 	TK_EQ = '=',
 	TK_OP = '(',
 	TK_CP = ')',

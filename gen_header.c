@@ -19,8 +19,7 @@ static void gen_common_struct_name(FILE *f, Decl *d, unsigned l, const char *fmt
 	vfprintf(f, fmt, ap);
 }
 static void gen_entry(FILE *f, Entry *e, unsigned l) {
-	fprintf (f, "union ");
-	gen_type(f, e->t, "*"); // auto insert a '*'
+	gen_type(f, e->t, ""); // auto insert a '*'
 	gen_name(f, e->n, ";\n");
 }
 static void gen_entries(FILE *f, Decl *d, Entries *es, unsigned l) {

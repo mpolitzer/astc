@@ -64,6 +64,11 @@ static Type *type(parser_t *p) {
 		adv(p);
 		return type_(p, type);
 	}
+	if (cur(p) == TK_SK) {
+		Type *type = mk_type_lit(&p->curtv);
+		adv(p);
+		return type_(p, type);
+	}
 	return NULL;
 }
 // entry: type:'<id:name>

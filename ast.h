@@ -35,7 +35,7 @@ typedef union type_t Type;
 union type_t {
 	struct type_any_t {
 		enum type_any_e {
-			TYPE_BASE, TYPE_PTR_OF
+			TYPE_BASE, TYPE_LIT, TYPE_PTR_OF
 		} tp;
 	} any;
 	struct base_type_t {
@@ -48,9 +48,16 @@ union type_t {
 		struct type_any_t _;
 		union type_t *of;
 	} ptr;
+
+	struct type_lit{
+		struct type_any_t _;
+		const char *s;
+		unsigned    n;
+	} lit;
 };
 
 Type *mk_type_base(token_value_t *tv);
+Type *mk_type_lit (token_value_t *tv);
 Type *mk_type_of(Type *of);
 
 /* -------------------------------------------------------------------------- */

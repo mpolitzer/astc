@@ -26,6 +26,11 @@ void gen_ident_only     (FILE *f, unsigned n);
 void gen_ident          (FILE *f, unsigned n, const char *fmt, ...);
 void gen_name           (FILE *f, Name *n, const char *fmt, ...);
 void gen_type           (FILE *f, Type *t, const char *fmt, ...);
+
+void gen_lit_entry      (FILE *f, Entry *e, unsigned l);
+void gen_struct_entry   (FILE *f, Entry *e, unsigned l);
+void gen_union_entry    (FILE *f, Entry *e, unsigned l);
+
 void gen_enum_entry_name(FILE *f, Name *d, Name *c, const char *fmt, ...);
 void gen_struct         (FILE *f, const char *pre, Name *d, Name *c, unsigned n, const char *post);
 void gen_function_name  (FILE *f, const char *pre, Name *d, Name *c, unsigned n, const char *pos);

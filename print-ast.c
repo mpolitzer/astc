@@ -12,7 +12,10 @@ static void print_name(Name *n, unsigned l, const char *fmt, ...) {
 static void print_type_(Type *t) {
 	switch (t->any.tp) {
 	case TYPE_BASE:
-		printf("%.*s", t->base.n, t->base.s);
+		printf("%.*s_t", t->base.n, t->base.s);
+		break;
+	case TYPE_LIT:
+		printf("%.*s", t->lit.n, t->lit.s);
 		break;
 	case TYPE_PTR_OF:
 		print_type_(t->ptr.of);
