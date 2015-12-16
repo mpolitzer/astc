@@ -46,6 +46,14 @@ static void lex_id(lexer_t *l) {
 	while (cur(l) == '_' || isalnum(cur(l)))
 		adv(l);
 }
+static token_value_t fill_value(lexer_t *l, const char *start, size_t len) {
+	token_value_t t;
+	t.charno = l->charno;
+	t.lineno = l->lineno;
+	t.s      = start;
+	t.len    = len;
+	return t;
+}
 token_e lex(lexer_t *l, token_value_t *t) {
 	const char *s;
 
@@ -59,15 +67,13 @@ redo:	s = l->cur;
 	case'\t':
 	case ' ': adv(l);
 		  goto redo;
-	case'\0':
 	case '*': 
 	case '(':
 	case ')':
-	case ':': t->charno = l->charno;
-		  t->lineno = l->lineno;
-		  t->s      = s;
-		  t->len    = 1;
+	case ':': *t = fill_value(l, s, 1);
 		  return adv(l);
+	case'\0': *t = fill_value(l, s, 1);
+		  return cur(l);
 	case '_':
 	__a_to_z:
 	__A_to_Z: t->charno = l->charno;

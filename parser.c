@@ -57,7 +57,7 @@ static Type *type_(parser_t *p, Type *of) {
 
 	return t;
 }
-// type : <id>
+// type : <id> | <id> type_
 static Type *type(parser_t *p) {
 	if (cur(p) == TK_ID) {
 		Type *type = mk_type_base(&p->curtv);
@@ -71,25 +71,9 @@ static Entry *entry(parser_t *p) {
 	Type *t;
 	Name *n;
 
-	if ((t = type(p)) && x(p, ':') && (n = name(p))) {
-		Entry *entry = mk_entry(t, n);
-		return entry;
-	}
+	if ((t = type(p)) && x(p, ':') && (n = name(p)))
+		return mk_entry(t, n);
 	return NULL;
-}
-// entries: entry entries | entry
-Entries *entries(parser_t *p) {
-	Entry *e = entry(p);
-	if (e == NULL) {
-		emit_p_error(p, "unexpected token received");
-		return NULL;
-	}
-
-	Entries *es = mk_entries();
-	do {
-		add_entry(es, e);
-	} while ((e = entry(p)));
-	return es;
 }
 // opt_entries: entry*
 static Entries *opt_entries(parser_t *p) {
@@ -104,28 +88,30 @@ static Clause *clause(parser_t *p) {
 	Name *n;
 	Entries *es;
 
-	if (try(p, '(') && (n=name(p)) && (es=opt_entries(p)) && x(p, ')')) {
+	if (try(p, '(') && (n=name(p)) && (es=opt_entries(p)) && x(p, ')'))
 		return mk_clause(n, es);
-	}
 	return NULL;
 }
 // opt_clauses: clause*;
 static Clauses *opt_clauses(parser_t *p) {
 	Clauses *cs = mk_clauses();
 	Clause *c;
-	while ((c = clause(p))) {
+	while ((c = clause(p)))
 		add_clause(cs, c);
-	}
 	return cs;
 }
-// decl : '(' <id:name> opt_clauses ')'
+// decl : '(' <id:name> opt_entries opt_clauses ')'
 static Decl *decl(parser_t *p) {
 	Name    *n;
 	Clauses *cs;
-	if (try(p, '(') && (n=name(p)) && (cs=opt_clauses(p)) && x(p, ')')) {
-		return mk_decl(n, cs);
-	}
-	return NULL;
+	Entries *es = NULL;
+	if (try(p, '(')
+			&& (n=name(p))
+			&& (es=opt_entries(p))
+			&& (cs=opt_clauses(p))
+			&& x(p, ')'))
+		return mk_decl(n, es, cs);
+	return NULL; // unexpected
 }
 // decls: decl decls | decl
 static Decls *decls(parser_t *p) {
@@ -134,6 +120,7 @@ static Decls *decls(parser_t *p) {
 		emit_l_error(&p->l, "unexpected token received");
 		return NULL;
 	}
+
 	Decls *ds = mk_decls();
 	do {
 		add_decl(ds, d);

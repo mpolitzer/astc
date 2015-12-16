@@ -93,12 +93,13 @@ Clauses *add_clause(Clauses *me, Clause *nxt);
 typedef struct decl_t Decl;
 struct decl_t {
 	Name    *n;
+	Entries *any;
 	Clauses *cs;
 
 	struct decl_t *nxt;
 };
 
-Decl *mk_decl(Name *n, Clauses *cs);
+Decl *mk_decl(Name *n, Entries *es, Clauses *cs);
 
 typedef struct decls_t Decls;
 struct decls_t {

@@ -24,7 +24,7 @@ void gen_name(FILE *f, Name *n, const char *fmt, ...) {
 static void gen_type_(FILE *f, Type *t) {
 	switch (t->any.tp) {
 	case TYPE_BASE:
-		fprintf(f, "%.*s_t", t->base.n, t->base.s);
+		fprintf(f, "%.*s_t ", t->base.n, t->base.s);
 		break;
 	case TYPE_PTR_OF:
 		gen_type_(f, t->ptr.of);
@@ -38,13 +38,18 @@ void gen_type(FILE *f, Type *t, const char *fmt, ...) {
 	gen_type_(f, t);
 	vfprintf(f, fmt, ap);
 }
-void gen_struct_name(FILE *f, Name *d, Name *c) {
+static void gen_struct_name_prefix(FILE *f, Name *d, Name *c) {
 	gen_name(f, d, "_");
-	gen_name(f, c, "_t");
+	gen_name(f, c, "");
 }
 void gen_struct(FILE *f, const char *pre, Name *d, Name *c, unsigned n, const char *pos) {
 	gen_ident(f, n, "%s", pre);
-	gen_struct_name(f, d, c);
+	gen_struct_name_prefix(f, d, c);
+	fprintf(f, "_t%s", pos);
+}
+void gen_function_name(FILE *f, const char *pre, Name *d, Name *c, unsigned n, const char *pos) {
+	gen_ident(f, n, "%s", pre);
+	gen_struct_name_prefix(f, d, c);
 	fprintf(f, "%s", pos);
 }
 void gen_enum_entry_name(FILE *f, Name *d, Name *c, const char *fmt, ...) {

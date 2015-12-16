@@ -41,7 +41,7 @@ static void print_entries(Entries *es, unsigned l) {
 }
 static void print_clause(Clause *c, unsigned l) {
 	print_name(c->n, l, " ");
-	print_entries(c->es, l);
+	print_entries(c->es, l+1);
 }
 static void print_clauses(Clauses *cs, unsigned l) {
 	for (Clause *c = cs->fst; c; c = c->nxt) {
@@ -51,7 +51,8 @@ static void print_clauses(Clauses *cs, unsigned l) {
 }
 static void print_decl(Decl *d, unsigned l) {
 	print_name(d->n, l, " ");
-	print_clauses(d->cs, l+1);
+	print_entries(d->any, l+1);
+	print_clauses(d->cs,  l+1);
 }
 static void print_decls(Decls *ds, unsigned l) {
 	for (Decl *d = ds->fst; d; d = d->nxt)

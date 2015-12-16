@@ -22,13 +22,13 @@ void gen_free(gen_t *me);
 void gen_header   (gen_t *me, Decls *ds);
 void gen_functions(gen_t *me, Decls *ds);
 
-void gen_ident_only     (FILE *me, unsigned n);
-void gen_ident          (FILE *me, unsigned n, const char *fmt, ...);
-void gen_name           (FILE *me, Name *n, const char *fmt, ...);
-void gen_type           (FILE *me, Type *t, const char *fmt, ...);
-void gen_struct         (FILE *me, const char *pre, Name *d, Name *c, unsigned n, const char *post);
-void gen_struct_name    (FILE *me, Name *d, Name *c);
-void gen_enum_entry_name(FILE *me, Name *d, Name *c, const char *fmt, ...);
+void gen_ident_only     (FILE *f, unsigned n);
+void gen_ident          (FILE *f, unsigned n, const char *fmt, ...);
+void gen_name           (FILE *f, Name *n, const char *fmt, ...);
+void gen_type           (FILE *f, Type *t, const char *fmt, ...);
+void gen_enum_entry_name(FILE *f, Name *d, Name *c, const char *fmt, ...);
+void gen_struct         (FILE *f, const char *pre, Name *d, Name *c, unsigned n, const char *post);
+void gen_function_name  (FILE *f, const char *pre, Name *d, Name *c, unsigned n, const char *pos);
 
 #endif /* GEN_H */
 

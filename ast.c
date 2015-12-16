@@ -25,8 +25,9 @@ Type *mk_type_of(Type *of) {
 
 Entry *mk_entry(Type *t, Name *n) {
 	NEW(me, Entry);
-	me->t = t;
-	me->n = n;
+	me->nxt=NULL;
+	me->t  = t;
+	me->n  = n;
 	return me;
 }
 
@@ -45,6 +46,7 @@ Entries *add_entry(Entries *me, Entry *nxt) {
 
 Clause *mk_clause(Name *n, Entries *es) {
 	NEW(me, Clause);
+	me->nxt= NULL;
 	me->n  = n;
 	me->es = es;
 	return me;
@@ -63,9 +65,11 @@ Clauses *add_clause(Clauses *me, Clause *nxt) {
 	return me;
 }
 
-Decl *mk_decl(Name *n, Clauses *cs) {
+Decl *mk_decl(Name *n, Entries *es, Clauses *cs) {
 	NEW(me, Decl);
+	me->nxt= NULL;
 	me->n  = n;
+	me->any= es;
 	me->cs = cs;
 	return me;
 }
