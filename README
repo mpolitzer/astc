@@ -3,7 +3,3 @@ Build a AST in C (structs and unions) from a simple description language.
 TODO:
 + insert a description, motivation and scope.
 
-
-TODO:
-+ initialize the fields of the 'any' struct.
-
