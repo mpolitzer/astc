@@ -76,7 +76,10 @@ void gen_enum_entry_name(FILE *f, Name *d, Name *c, const char *fmt, ...) {
 	gen_name(f, c, "_e");
 	vfprintf(f, fmt, ap);
 }
-
+void gen_decl_separator(FILE *f, Decl *d) {
+	fprintf(f, "/* ========== ");
+	gen_name(f, d->n, " ========== */\n");
+}
 /* -------------------------------------------------------------------------- */
 
 gen_t mk_gen(const char *c, const char *h) {

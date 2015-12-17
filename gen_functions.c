@@ -7,7 +7,7 @@ static void gen_type_name_from_decl(FILE *f, Decl *d) {
 	gen_name(f, d->n, "_t *");
 }
 static void gen_entry(FILE *f, Entry *e, unsigned l) {
-	gen_type(f, e->t, " ");
+	gen_type(f, e->t, "");
 	gen_name(f, e->n, "");
 }
 static void gen_fn_declaration_header(FILE *f, Decl *d, Clause *c, unsigned l) {
@@ -25,6 +25,11 @@ static void gen_fn_declaration_body(FILE *f, Decl *d, Clause *c, unsigned l) {
 	gen_ident(f, l, "me->_.tp = ");
 	gen_enum_entry_name(f, d->n, c->n, ";\n");
 
+	for (Entry *e = d->any->fst; e; e = e->nxt) {
+		gen_ident(f, l, "me->_.");
+		gen_name (f, e->n, " = ");
+		fprintf(f, "0;\n");
+	}
 	for (Entry *e = c->es->fst; e; e = e->nxt) {
 		gen_ident(f, l, "me->");
 		gen_name (f, e->n, " = ");
@@ -35,6 +40,7 @@ static void gen_fn_declaration_body(FILE *f, Decl *d, Clause *c, unsigned l) {
 	fprintf(f, "}\n\n");
 }
 static void gen_decl(FILE *f, Decl *d, unsigned l) {
+	gen_decl_separator(f, d);
 	for (Clause *c = d->cs->fst; c; c = c->nxt) {
 		gen_fn_declaration_header(f, d, c, l);
 		gen_fn_declaration_body(f, d, c, l);

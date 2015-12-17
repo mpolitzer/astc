@@ -47,8 +47,7 @@ static void gen_individual_struct(FILE *f, Decl *d, unsigned l, const char *fmt,
 	vfprintf(f, fmt, ap);
 }
 static void gen_decl(FILE *f, Decl *d, unsigned l) {
-	fprintf(f, "/* ========== ");
-	gen_name(f, d->n, " ========== */\n");
+	gen_decl_separator(f, d);
 	fprintf(f, "union ");
 	gen_name(f, d->n, "_t {\n");
 	gen_the_any_struct(f, d, l);

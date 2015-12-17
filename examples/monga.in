@@ -16,6 +16,7 @@
 (expr  (chr "char" :s8)
        (flt "float":f32)
        (s32 "int"  :s32)
+       (var var*   :v)
 
        (add expr*:l expr*:r)
        (sub expr*:l expr*:r)

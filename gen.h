@@ -26,6 +26,7 @@ void gen_ident_only     (FILE *f, unsigned n);
 void gen_ident          (FILE *f, unsigned n, const char *fmt, ...);
 void gen_name           (FILE *f, Name *n, const char *fmt, ...);
 void gen_type           (FILE *f, Type *t, const char *fmt, ...);
+void gen_decl_separator (FILE *f, Decl *d);
 
 void gen_lit_entry      (FILE *f, Entry *e, unsigned l);
 void gen_struct_entry   (FILE *f, Entry *e, unsigned l);
