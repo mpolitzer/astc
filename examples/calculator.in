@@ -1,0 +1,8 @@
+# calculator with the 4 basic arithmetic operations and the unary minus.
+(expr
+  (lit "float":f32)
+  (neg expr*:e)
+  (add expr*:l expr*:r)
+  (sub expr*:l expr*:r)
+  (mul expr*:l expr*:r)
+  (div expr*:l expr*:r))
